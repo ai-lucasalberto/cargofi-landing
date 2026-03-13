@@ -49,12 +49,6 @@ function Hero() {
         style={{ width: 800, height: 400, background: "radial-gradient(ellipse, rgba(59,130,246,0.12) 0%, transparent 70%)" }} />
 
       <div className="relative text-center px-6 max-w-4xl mx-auto pt-24">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-8"
-          style={{ border: "1px solid rgba(59,130,246,0.35)", background: "rgba(59,130,246,0.1)", color: "#93c5fd" }}>
-          <span>📄</span>
-          <span>Plataforma AI · Cross-border MEX–USA</span>
-        </div>
-
         <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight leading-tight mb-6 text-white">
           Cruza la frontera<br />
           <span className="gradient-text">con inteligencia</span>
