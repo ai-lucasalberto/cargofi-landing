@@ -16,6 +16,7 @@ function Nav() {
           <a href="#solucion" className="hover:text-white transition-colors">Solución</a>
           <a href="#como-funciona" className="hover:text-white transition-colors">Cómo funciona</a>
           <a href="#precios" className="hover:text-white transition-colors">Precios</a>
+          <a href="/demo" className="hover:text-white transition-colors" style={{ color: "#60a5fa" }}>Demo →</a>
         </div>
         <a href="#contacto"
           className="hidden md:inline-flex px-4 py-2 rounded-lg text-sm font-semibold transition-colors text-white"
