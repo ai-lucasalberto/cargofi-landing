@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const DEMO_PASSWORD = process.env.DEMO_PASSWORD || "cargofi2026";
+const DEMO_PASSWORD = process.env.DEMO_PASSWORD || "Lucas.2026";
 const COOKIE_NAME = "cargofi_demo_auth";
 
 export async function POST(request: NextRequest) {
