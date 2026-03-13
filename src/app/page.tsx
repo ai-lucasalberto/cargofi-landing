@@ -9,7 +9,7 @@ function Nav() {
       className="fixed top-0 left-0 right-0 z-50">
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         <div className="text-xl font-bold tracking-tight">
-          Cargo<span style={{ color: "#3b82f6" }}>Fi</span>
+          Cargo<span style={{ color: "#34d399" }}>Fi</span>
         </div>
         <div className="hidden md:flex items-center gap-8 text-sm" style={{ color: "#94a3b8" }}>
           <a href="#problema" className="hover:text-white transition-colors">Problema</a>
@@ -313,7 +313,7 @@ function Footer() {
     <footer className="py-8" style={{ borderTop: "1px solid rgba(255,255,255,0.05)", background: "#0a0f1e" }}>
       <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm" style={{ color: "#475569" }}>
         <div className="font-bold" style={{ color: "#94a3b8" }}>
-          Cargo<span style={{ color: "#3b82f6" }}>Fi</span>
+          Cargo<span style={{ color: "#34d399" }}>Fi</span>
         </div>
         <div>© {new Date().getFullYear()} CargoFi · cargofi.io</div>
         <a href="mailto:hello@cargofi.io" className="hover:text-slate-400 transition-colors">Contacto</a>
