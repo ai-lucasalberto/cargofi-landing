@@ -4,6 +4,106 @@ import { useState, useRef } from "react";
 
 const API = "https://cargofi-backend-production.up.railway.app";
 
+// ── Sample documents for "Try with example" ──────────────────────────────────
+const SAMPLES: { label: string; icon: string; desc: string; data: Record<string, unknown> }[] = [
+  {
+    label: "Bill of Lading",
+    icon: "📦",
+    desc: "Embarque Monterrey → Laredo TX",
+    data: {
+      doc_type: "bill_of_lading",
+      doc_type_label: "Bill of Lading (BOL)",
+      filename: "BOL-SAMPLE-2024.pdf",
+      confidence: 0.97,
+      language: "bilingual",
+      warnings: [],
+      bol_number: "MTY-2024-00847",
+      booking_number: "BK-20240312",
+      shipper_name: "Industrias Monterrey S.A. de C.V.",
+      shipper_address: "Av. Constitución 1200, Monterrey, N.L. 64000, México",
+      consignee_name: "Texas Distributors LLC",
+      consignee_address: "1502 E. Saunders St, Laredo, TX 78041, USA",
+      notify_party: "Texas Distributors LLC",
+      port_of_loading: "Monterrey, N.L.",
+      port_of_discharge: "Laredo, TX",
+      place_of_delivery: "Dallas, TX",
+      cargo_description: "Autopartes metálicas — 240 cajas / Automotive metal parts",
+      hs_code: "8708.99",
+      quantity: "240",
+      weight_kg: "4800",
+      volume_cbm: "18.5",
+      freight_terms: "Prepaid",
+      issue_date: "2024-03-12",
+    },
+  },
+  {
+    label: "Carta Porte",
+    icon: "🚛",
+    desc: "CFDI 4.0 — Tránsito nacional MEX",
+    data: {
+      doc_type: "carta_porte",
+      doc_type_label: "Carta Porte",
+      filename: "CARTA-PORTE-SAMPLE.pdf",
+      confidence: 0.94,
+      language: "es",
+      warnings: ["Verificar que el RFC del receptor sea válido en el SAT"],
+      folio_fiscal: "A1B2C3D4-E5F6-7890-ABCD-EF1234567890",
+      fecha_emision: "2024-03-12T08:30:00",
+      rfcEmisor: "TRA860315KT2",
+      nombreEmisor: "Transportes Rápidos del Norte S.A. de C.V.",
+      rfcReceptor: "IND920801XY3",
+      nombreReceptor: "Industrias del Norte S.A. de C.V.",
+      total_distance_km: "920",
+      unit_type: "Tractocamión",
+      unit_plates: "NLE-123-A",
+      operator_name: "Juan Carlos Ramírez López",
+      operator_license: "RALJ840510H2",
+      origin_location: "Monterrey, Nuevo León",
+      origin_date: "2024-03-12T09:00:00",
+      destination_location: "Ciudad Juárez, Chihuahua",
+      estimated_arrival: "2024-03-13T14:00:00",
+      merchandise_description: "Autopartes metálicas para exportación",
+      weight_kg: "4800",
+      quantity: "240",
+      hs_code: "8708.99",
+      hazmat_flag: false,
+    },
+  },
+  {
+    label: "Factura Comercial",
+    icon: "🧾",
+    desc: "Export Invoice MEX → USA",
+    data: {
+      doc_type: "commercial_invoice",
+      doc_type_label: "Factura Comercial / Commercial Invoice",
+      filename: "INVOICE-SAMPLE-2024.pdf",
+      confidence: 0.96,
+      language: "bilingual",
+      warnings: [],
+      invoice_number: "INV-2024-00312",
+      invoice_date: "2024-03-11",
+      seller_name: "Industrias Monterrey S.A. de C.V.",
+      seller_address: "Av. Constitución 1200, Monterrey, N.L. 64000, México",
+      seller_tax_id: "IMO8603154XZ",
+      buyer_name: "Texas Distributors LLC",
+      buyer_address: "1502 E. Saunders St, Laredo, TX 78041, USA",
+      buyer_tax_id: "TX-87-654321",
+      incoterms: "DAP Laredo TX",
+      payment_terms: "Net 30",
+      currency: "USD",
+      country_of_origin: "México",
+      country_of_destination: "United States",
+      line_items: [
+        { description: "Bracket soporte motor — Ref. BS-2240", hs_code: "8708.99", qty: "120", unit_price: "45.00", total: "5400.00" },
+        { description: "Tuerca hexagonal acero inox — Ref. TH-0880", hs_code: "7318.16", qty: "5000", unit_price: "0.48", total: "2400.00" },
+      ],
+      subtotal: "7800.00",
+      taxes: "0.00",
+      total_amount: "7800.00",
+    },
+  },
+];
+
 const DOC_TYPES: Record<string, string> = {
   "": "🤖 Auto-detectar",
   bill_of_lading: "📦 Bill of Lading (BOL)",
@@ -208,7 +308,25 @@ export default function Demo() {
         {step === "upload" && (
           <div className="max-w-lg mx-auto">
             <h1 className="text-3xl font-extrabold mb-2 text-center">Sube tu documento</h1>
-            <p className="text-center mb-8" style={{color:"#94a3b8"}}>BOL, Factura, Carta Porte, Pedimento, POD — cualquier formato</p>
+            <p className="text-center mb-6" style={{color:"#94a3b8"}}>BOL, Factura, Carta Porte, Pedimento, POD — cualquier formato</p>
+
+            {/* Sample documents */}
+            <div className="mb-6">
+              <div className="text-xs font-bold uppercase tracking-widest mb-3 text-center" style={{color:"#64748b"}}>
+                — O prueba con un documento de ejemplo —
+              </div>
+              <div className="grid grid-cols-3 gap-3">
+                {SAMPLES.map((s) => (
+                  <button key={s.label} onClick={() => { setExtracted(s.data); setStep("extracted"); setError(""); }}
+                    className="rounded-xl p-4 text-left transition-all group"
+                    style={{background:"rgba(59,130,246,0.06)",border:"1px solid rgba(59,130,246,0.2)"}}>
+                    <div className="text-2xl mb-2">{s.icon}</div>
+                    <div className="text-sm font-bold text-white">{s.label}</div>
+                    <div className="text-xs mt-1" style={{color:"#64748b"}}>{s.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
 
             <div onClick={()=>inputRef.current?.click()}
               onDragOver={e=>{e.preventDefault();setDragOver(true)}}
@@ -386,7 +504,7 @@ export default function Demo() {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-2xl font-extrabold">eManifest pre-llenado</h2>
-                <p className="text-sm mt-1" style={{color:"#64748b"}}>Generado desde los documentos extraídos · Lista para Censecar / ACE</p>
+                <p className="text-sm mt-1" style={{color:"#64748b"}}>Generado desde los documentos extraídos · Listo para compartir con tu agente aduanal</p>
               </div>
               <div className="flex gap-2">
                 <button onClick={copyManifest}
@@ -439,14 +557,14 @@ export default function Demo() {
                 <div className="rounded-xl p-4 mt-4" style={{background:"rgba(59,130,246,0.08)",border:"1px solid rgba(59,130,246,0.2)"}}>
                   <div className="text-xs font-bold mb-2" style={{color:"#60a5fa"}}>🚀 Siguiente paso</div>
                   <p className="text-xs leading-relaxed" style={{color:"#94a3b8"}}>
-                    Copia este manifiesto y pégalo en <strong style={{color:"#fff"}}>Censecar</strong> para hacer el submit a CBP. 
-                    Próximamente: submit directo desde CargoFi.
+                    Comparte este resumen con tu agente aduanal o tu equipo de despacho. 
+                    Próximamente: envío directo al sistema de tu agente desde CargoFi.
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="rounded-2xl p-5 flex items-center gap-4"
+            <div className="rounded-2xl p-5 flex items-center gap-4 mb-6"
               style={{background:"rgba(34,197,94,0.05)",border:"1px solid rgba(34,197,94,0.2)"}}>
               <div className="text-3xl">⏱️</div>
               <div>
@@ -455,6 +573,31 @@ export default function Demo() {
                   Tiempo típico llenando el manifiesto manualmente vs con CargoFi
                 </div>
               </div>
+            </div>
+
+            {/* CTA Post-Demo */}
+            <div className="rounded-2xl p-8 text-center"
+              style={{background:"linear-gradient(135deg, rgba(37,99,235,0.12), rgba(8,145,178,0.08))", border:"2px solid rgba(59,130,246,0.3)"}}>
+              <div className="text-3xl mb-3">🚀</div>
+              <h3 className="text-2xl font-extrabold mb-2 text-white">¿Te convenció?</h3>
+              <p className="text-sm mb-6" style={{color:"#94a3b8"}}>
+                Esto fue solo el demo. Con tu cuenta tienes vault completo, validación multi-documento y soporte dedicado.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <a href="/#contacto"
+                  className="px-8 py-3 rounded-xl font-bold text-sm text-white"
+                  style={{background:"linear-gradient(90deg,#2563eb,#0891b2)",boxShadow:"0 8px 24px rgba(37,99,235,0.3)"}}>
+                  Solicitar piloto gratis — 30 días →
+                </a>
+                <button onClick={reset}
+                  className="px-6 py-3 rounded-xl font-semibold text-sm"
+                  style={{border:"1px solid rgba(255,255,255,0.12)",color:"#94a3b8"}}>
+                  Probar otro documento
+                </button>
+              </div>
+              <p className="text-xs mt-4" style={{color:"#475569"}}>
+                Sin tarjeta de crédito · Setup en 15 minutos
+              </p>
             </div>
           </div>
         )}

@@ -265,6 +265,27 @@ function Pricing() {
 }
 
 function Contact() {
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setStatus("loading");
+    const form = e.currentTarget;
+    const company = (form.elements.namedItem("company") as HTMLInputElement).value.trim();
+    const email = (form.elements.namedItem("email") as HTMLInputElement).value.trim();
+    try {
+      const res = await fetch("https://cargofi-backend-production.up.railway.app/api/leads/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ company, email, source: "landing" }),
+      });
+      if (!res.ok) throw new Error("server");
+      setStatus("success");
+    } catch {
+      setStatus("error");
+    }
+  };
+
   return (
     <section id="contacto" className="py-24 relative overflow-hidden" style={{ background: "#0d1530" }}>
       <div className="absolute inset-0 pointer-events-none"
@@ -278,27 +299,44 @@ function Contact() {
         <p className="text-lg mb-10" style={{ color: "#94a3b8" }}>
           Piloto gratuito 30 días · Sin tarjeta de crédito · Setup en 15 minutos
         </p>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            const form = e.target as HTMLFormElement;
-            const email = (form.elements.namedItem("email") as HTMLInputElement).value;
-            const company = (form.elements.namedItem("company") as HTMLInputElement).value;
-            window.location.href = `mailto:hello@cargofi.io?subject=Demo - ${company}&body=Email: ${email}%0AEmpresa: ${company}`;
-          }}
-          className="flex flex-col gap-4 max-w-md mx-auto">
-          <input name="company" type="text" placeholder="Nombre de tu empresa" required
-            className="px-5 py-4 rounded-xl text-white outline-none transition-all"
-            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }} />
-          <input name="email" type="email" placeholder="Tu correo de trabajo" required
-            className="px-5 py-4 rounded-xl text-white outline-none transition-all"
-            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }} />
-          <button type="submit"
-            className="px-8 py-4 rounded-xl font-bold text-base text-white transition-all"
-            style={{ background: "linear-gradient(90deg, #2563eb, #0891b2)", boxShadow: "0 8px 24px rgba(37,99,235,0.3)" }}>
-            Solicitar piloto gratis →
-          </button>
-        </form>
+
+        {status === "success" ? (
+          <div className="max-w-md mx-auto rounded-2xl p-8 text-center"
+            style={{ background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.3)" }}>
+            <div className="text-4xl mb-3">✅</div>
+            <div className="text-xl font-bold mb-2 text-white">¡Listo! Te contactamos pronto.</div>
+            <p className="text-sm" style={{ color: "#94a3b8" }}>
+              Revisamos tu solicitud y te escribimos en menos de 24 horas para agendar el piloto.
+            </p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4 max-w-md mx-auto">
+            <input name="company" type="text" placeholder="Nombre de tu empresa" required
+              disabled={status === "loading"}
+              className="px-5 py-4 rounded-xl text-white outline-none transition-all"
+              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }} />
+            <input name="email" type="email" placeholder="Tu correo de trabajo" required
+              disabled={status === "loading"}
+              className="px-5 py-4 rounded-xl text-white outline-none transition-all"
+              style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }} />
+            {status === "error" && (
+              <p className="text-sm" style={{ color: "#f87171" }}>
+                Algo salió mal. Escríbenos directo a{" "}
+                <a href="mailto:hello@cargofi.io" style={{ color: "#60a5fa" }}>hello@cargofi.io</a>
+              </p>
+            )}
+            <button type="submit" disabled={status === "loading"}
+              className="px-8 py-4 rounded-xl font-bold text-base text-white transition-all"
+              style={{
+                background: status === "loading" ? "rgba(37,99,235,0.5)" : "linear-gradient(90deg, #2563eb, #0891b2)",
+                boxShadow: "0 8px 24px rgba(37,99,235,0.3)",
+                cursor: status === "loading" ? "not-allowed" : "pointer",
+              }}>
+              {status === "loading" ? "Enviando..." : "Solicitar piloto gratis →"}
+            </button>
+          </form>
+        )}
+
         <p className="text-sm mt-8" style={{ color: "#475569" }}>
           O escríbenos a{" "}
           <a href="mailto:hello@cargofi.io" style={{ color: "#60a5fa" }}>hello@cargofi.io</a>
