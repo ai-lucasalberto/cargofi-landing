@@ -322,7 +322,7 @@ function Contact() {
             {status === "error" && (
               <p className="text-sm" style={{ color: "#f87171" }}>
                 Algo salió mal. Escríbenos directo a{" "}
-                <a href="mailto:hello@cargofi.io" style={{ color: "#60a5fa" }}>hello@cargofi.io</a>
+                <a href="mailto:contact@cargofi.io" style={{ color: "#60a5fa" }}>contact@cargofi.io</a>
               </p>
             )}
             <button type="submit" disabled={status === "loading"}
@@ -339,7 +339,7 @@ function Contact() {
 
         <p className="text-sm mt-8" style={{ color: "#475569" }}>
           O escríbenos a{" "}
-          <a href="mailto:hello@cargofi.io" style={{ color: "#60a5fa" }}>hello@cargofi.io</a>
+          <a href="mailto:contact@cargofi.io" style={{ color: "#60a5fa" }}>contact@cargofi.io</a>
         </p>
       </div>
     </section>
@@ -354,7 +354,7 @@ function Footer() {
           Cargo<span style={{ color: "#34d399" }}>Fi</span>
         </div>
         <div>© {new Date().getFullYear()} CargoFi · cargofi.io</div>
-        <a href="mailto:hello@cargofi.io" className="hover:text-slate-400 transition-colors">Contacto</a>
+        <a href="mailto:contact@cargofi.io" className="hover:text-slate-400 transition-colors">Contacto</a>
       </div>
     </footer>
   );
